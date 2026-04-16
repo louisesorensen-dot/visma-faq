@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Visma House FAQ</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f4f4;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.card {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.category {
+  font-size: 12px;
+  color: gray;
+  margin-top: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Visma House FAQ</h1>
+  <p>Søg i praktisk information</p>
+
+  <input id="search" placeholder="Søg fx kantine, IT, adgang..." />
+
+  <div id="list"></div>
+</div>
+
+<script>
+const data = [
+  {q:"Reception åbningstid",a:"07.30–16.00",c:"Kontakt"},
+  {q:"Kontakt reception",a:"reception.cby@visma.com / +45 31 46 93 96",c:"Kontakt"},
+  {q:"Frokost tid",a:"11.00–13.00",c:"Kantine"},
+  {q:"Kantine leverandør",a:"ISS - The Food Place",c:"Kantine"},
+  {q:"IT support",a:"service.visma.com",c:"IT"},
+  {q:"Fitness",a:"Åben 24/7 i stueetagen",c:"Faciliteter"},
+  {q:"Parkering",a:"Carlsberg Byen området",c:"Parkering"},
+  {q:"Adgangskort",a:"Bruges til døre, elevatorer og kantine",c:"Adgang"}
+];
+
+const search = document.getElementById("search");
+const list = document.getElementById("list");
+
+function render() {
+  const q = search.value.toLowerCase();
+
+  const filtered = data.filter(i =>
+    i.q.toLowerCase().includes(q) ||
+    i.a.toLowerCase().includes(q) ||
+    i.c.toLowerCase().includes(q)
+  );
+
+  list.innerHTML = filtered.map(i => `
+    <div class="card">
+      <b>${i.q}</b><br/>
+      ${i.a}<br/>
+      <span class="category">${i.c}</span>
+    </div>
+  `).join("");
+}
+
+search.addEventListener("input", render);
+
+render();
+</script>
+
+</body>
+</html>
