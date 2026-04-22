@@ -1,15 +1,9 @@
 import { useState } from "react";
-import { data } from "./faqdata";
+import { data } from "./faqData";
 export default function App() {
   const [search, setSearch] = useState("");
 
-  const data = [
-    { q: "Reception åbningstid", a: "07.30–16.00", c: "Kontakt" },
-    { q: "Kantine åbningstid", a: "11.00–13.00", c: "Kantine" },
-    { q: "IT support", a: "service.visma.com", c: "IT" },
-    { q: "Fitness", a: "24/7 adgang", c: "Faciliteter" },
-    { q: "Parkering", a: "Carlsberg Byen områder", c: "Parkering" }
-  ];
+
 
   const filtered = data.filter(i =>
     i.q.toLowerCase().includes(search.toLowerCase()) ||
