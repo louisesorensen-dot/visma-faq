@@ -45,8 +45,7 @@ export default function App() {
             background: "#fff",
             padding: 18,
             borderRadius: 12,
-            boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
-            transition: "0.2s ease"
+            boxShadow: "0 2px 10px rgba(0,0,0,0.06)"
           }}
         >
           <div style={{ fontWeight: "bold", fontSize: 16 }}>
