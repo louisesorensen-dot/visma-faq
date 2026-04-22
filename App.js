@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { data } from "./faqData";
+import { data } from "./faqdata";
 export default function App() {
   const [search, setSearch] = useState("");
 
