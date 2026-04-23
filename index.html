@@ -124,45 +124,52 @@ body {
 /* ── Category grid ── */
 #categories {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 900px) {
+  #categories { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
   #categories { grid-template-columns: repeat(2, 1fr); }
   .hero h1 { font-size: 28px; }
 }
 
 .category-block {
-  background: var(--tile-bg, var(--navy));
+  background: var(--tile-bg, #e8f0f5);
   border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   overflow: hidden;
   transition: box-shadow 0.2s, transform 0.15s;
+  border: 2px solid transparent;
 }
 
 .category-block:not(.open):hover {
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.11);
+  transform: translateY(-3px);
+  border-color: var(--tile-accent, #8FD4C8);
 }
 
 .category-block.open {
   grid-column: 1 / -1;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+  border-color: var(--tile-accent, #8FD4C8);
 }
 
 .category-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 26px 22px;
+  padding: 28px 24px;
   cursor: pointer;
   user-select: none;
-  min-height: 110px;
+  min-height: 130px;
 }
 
 .category-block.open .category-header {
-  border-bottom: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 2px solid var(--tile-accent, #8FD4C8);
 }
 
 .cat-left {
@@ -172,12 +179,12 @@ body {
 }
 
 .cat-icon {
-  font-size: 28px;
+  font-size: 30px;
   line-height: 1;
-  width: 52px;
-  height: 52px;
-  background: rgba(255,255,255,0.18);
-  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -186,20 +193,20 @@ body {
 
 .cat-name {
   font-weight: 700;
-  font-size: 16px;
-  color: #fff;
+  font-size: 15px;
+  color: var(--navy);
 }
 
 .cat-count {
   font-size: 12px;
-  color: rgba(255,255,255,0.75);
+  color: var(--text-soft);
   margin-top: 4px;
   font-weight: 500;
 }
 
 .arrow {
   font-size: 13px;
-  color: rgba(255,255,255,0.8);
+  color: var(--tile-accent, #8FD4C8);
   transition: transform 0.25s ease;
   flex-shrink: 0;
   margin-left: 8px;
@@ -314,22 +321,22 @@ const ICONS = {
 };
 
 const COLORS = {
-  "Info om huset":         "#0C3B55",
-  "Kontakt & Facility":    "#1B6CA8",
-  "IT & support":          "#2D4A8A",
-  "Kantine & mad":         "#2A9D8F",
-  "Adgang & sikkerhed":    "#B8103A",
-  "Alarmer & beredskab":   "#9B1020",
-  "Fitness & faciliteter": "#1A7A6E",
-  "Gæster & registrering": "#5B4FCF",
-  "Nye medarbejdere":      "#2E7D5E",
-  "Mødelokaler":           "#6B4F9A",
-  "Auditorium":            "#164E6E",
-  "Etager & faciliteter":  "#2F6B8A",
-  "Parkering":             "#3D4F68",
-  "Cykelparkering":        "#3D7A45",
-  "Arrangementer & events":"#C07030",
-  "Husregler":             "#7B1533"
+  "Info om huset":         { bg: "#D9E8F0", accent: "#1B6CA8" },
+  "Kontakt & Facility":    { bg: "#D6E8F5", accent: "#1B6CA8" },
+  "IT & support":          { bg: "#D8DCF0", accent: "#2D4A8A" },
+  "Kantine & mad":         { bg: "#CCF0EB", accent: "#2A9D8F" },
+  "Adgang & sikkerhed":    { bg: "#F5D8DF", accent: "#B8103A" },
+  "Alarmer & beredskab":   { bg: "#F2D2D5", accent: "#9B1020" },
+  "Fitness & faciliteter": { bg: "#C8EDE8", accent: "#1A7A6E" },
+  "Gæster & registrering": { bg: "#E3DEFC", accent: "#5B4FCF" },
+  "Nye medarbejdere":      { bg: "#CCE8D8", accent: "#2E7D5E" },
+  "Mødelokaler":           { bg: "#DED8F0", accent: "#6B4F9A" },
+  "Auditorium":            { bg: "#D0E0EC", accent: "#164E6E" },
+  "Etager & faciliteter":  { bg: "#D2E6EF", accent: "#2F6B8A" },
+  "Parkering":             { bg: "#D8DDE6", accent: "#3D4F68" },
+  "Cykelparkering":        { bg: "#CCE8D0", accent: "#3D7A45" },
+  "Arrangementer & events":{ bg: "#F5E4CC", accent: "#C07030" },
+  "Husregler":             { bg: "#F0D0D8", accent: "#7B1533" }
 };
 
 const data = [
@@ -480,10 +487,10 @@ function render() {
     const isOpen = isSearching || openCategories.has(cat);
     const count  = grouped[cat].length;
     const icon   = ICONS[cat] || "📁";
-    const color  = COLORS[cat] || "#0C3B55";
+    const col = COLORS[cat] || { bg: "#D9E8F0", accent: "#1B6CA8" };
 
     return `
-      <div class="category-block ${isOpen ? "open" : ""}" style="--tile-bg:${color}" data-cat="${escapeAttr(cat)}">
+      <div class="category-block ${isOpen ? "open" : ""}" style="--tile-bg:${col.bg};--tile-accent:${col.accent}" data-cat="${escapeAttr(cat)}">
         <div class="category-header" onclick="toggleCategory(this.closest('.category-block'))">
           <div class="cat-left">
             <div class="cat-icon">${icon}</div>
