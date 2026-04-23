@@ -277,6 +277,60 @@ body {
   .card { grid-template-columns: 1fr; gap: 6px; }
 }
 
+/* ── Søgeresultater ── */
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.result-count {
+  font-size: 14px;
+  color: var(--text-soft);
+  margin-bottom: 4px;
+}
+
+.result-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 22px;
+  box-shadow: 0 4px 16px rgba(12,59,85,0.10), 0 1px 4px rgba(12,59,85,0.06);
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.result-card:hover {
+  box-shadow: 0 8px 28px rgba(12,59,85,0.16);
+  transform: translateY(-2px);
+}
+
+.result-cat {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.result-q {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.result-a {
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+mark {
+  background: #fff3b0;
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
 /* ── No results ── */
 .no-results {
   grid-column: 1 / -1;
@@ -476,8 +530,15 @@ function groupByCategory(items) {
   return groups;
 }
 
+function highlight(text, q) {
+  if (!q) return escapeHtml(text);
+  const escaped = escapeHtml(text);
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return escaped.replace(re, '<mark>$1</mark>');
+}
+
 function render() {
-  const q          = searchInput.value.toLowerCase().trim();
+  const q           = searchInput.value.toLowerCase().trim();
   const isSearching = q.length > 0;
 
   const filtered = data.filter(i =>
@@ -486,23 +547,40 @@ function render() {
     i.c.toLowerCase().includes(q)
   );
 
-  const grouped    = groupByCategory(filtered);
-  const categories = Object.keys(grouped);
-
-  if (categories.length === 0) {
+  if (isSearching) {
+    categoriesEl.className = "search-results";
+    if (filtered.length === 0) {
+      categoriesEl.innerHTML = `
+        <div class="no-results">
+          <div class="no-results-icon">🔍</div>
+          <p>Ingen resultater for <strong>"${escapeHtml(searchInput.value)}"</strong></p>
+        </div>`;
+      return;
+    }
     categoriesEl.innerHTML = `
-      <div class="no-results">
-        <div class="no-results-icon">🔍</div>
-        <p>Ingen resultater for <strong>"${escapeHtml(searchInput.value)}"</strong></p>
-      </div>`;
+      <div class="result-count">${filtered.length} resultat${filtered.length !== 1 ? "er" : ""} for "<strong>${escapeHtml(searchInput.value)}</strong>"</div>
+      ${filtered.map(item => {
+        const col = COLORS[item.c] || { accent: "#1B6CA8" };
+        const icon = ICONS[item.c] || "📁";
+        return `
+          <div class="result-card">
+            <div class="result-cat" style="color:${col.accent}">${icon} ${escapeHtml(item.c)}</div>
+            <div class="result-q">${highlight(item.q, q)}</div>
+            <div class="result-a">${highlight(item.a, q)}</div>
+          </div>`;
+      }).join("")}`;
     return;
   }
 
+  categoriesEl.className = "";
+  const grouped    = groupByCategory(filtered);
+  const categories = Object.keys(grouped);
+
   categoriesEl.innerHTML = categories.map(cat => {
-    const isOpen = isSearching || openCategories.has(cat);
+    const isOpen = openCategories.has(cat);
     const count  = grouped[cat].length;
     const icon   = ICONS[cat] || "📁";
-    const col = COLORS[cat] || { bg: "#D9E8F0", accent: "#1B6CA8" };
+    const col    = COLORS[cat] || { accent: "#1B6CA8" };
 
     return `
       <div class="category-block ${isOpen ? "open" : ""}" style="--tile-accent:${col.accent}" data-cat="${escapeAttr(cat)}">
@@ -511,7 +589,7 @@ function render() {
             <div class="cat-icon">${icon}</div>
             <div class="cat-text">
               <div class="cat-name">${escapeHtml(cat)}</div>
-              <div class="cat-count">${count} ${count === 1 ? "spørgsmål" : "spørgsmål"}</div>
+              <div class="cat-count">${count} spørgsmål</div>
             </div>
           </div>
           <span class="arrow">▼</span>
