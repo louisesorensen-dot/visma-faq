@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Visma Houses Chatbot</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:     #0C3B55;
+  --mint:     #8FD4C8;
+  --bordeaux: #722F37;
+  --white:    #ffffff;
+  --bg:       #f4f6f8;
+  --text:     #0C3B55;
+  --soft:     #4a6375;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Hero ── */
+.hero {
+  background: var(--navy);
+  padding: 28px 24px 72px;
+  text-align: center;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  right: -80px; top: -100px;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  background: #1B6CA8;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  right: 100px; top: 40px;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: var(--bordeaux);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.back-link {
+  position: absolute;
+  left: 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.15s;
+}
+
+.back-link:hover { color: var(--white); }
+
+.hero-logo {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--mint);
+}
+
+.hero h1 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero p {
+  font-size: 15px;
+  opacity: 0.75;
+  margin-top: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Chat container ── */
+.chat-wrap {
+  max-width: 760px;
+  width: 100%;
+  margin: -44px auto 0;
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Messages ── */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0 8px;
+}
+
+.bubble-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.bubble-row.user {
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.avatar.bot {
+  background: var(--navy);
+  color: var(--mint);
+  font-size: 16px;
+}
+
+.avatar.user {
+  background: var(--mint);
+  color: var(--navy);
+  font-size: 13px;
+}
+
+.bubble {
+  max-width: 78%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.bubble.bot {
+  background: var(--white);
+  color: var(--text);
+  border-bottom-left-radius: 4px;
+}
+
+.bubble.user {
+  background: var(--navy);
+  color: var(--white);
+  border-bottom-right-radius: 4px;
+}
+
+/* Typing indicator */
+.typing {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 14px 16px;
+}
+
+.typing span {
+  width: 7px;
+  height: 7px;
+  background: var(--soft);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%            { transform: translateY(-6px); opacity: 1; }
+}
+
+/* Suggestions */
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 4px 42px;
+}
+
+.suggestion {
+  background: var(--white);
+  border: 1.5px solid var(--mint);
+  color: var(--navy);
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+
+.suggestion:hover {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+
+/* ── Input ── */
+.input-area {
+  background: var(--white);
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(12,59,85,0.10);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 10px 16px;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.input-area textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text);
+  resize: none;
+  height: 24px;
+  max-height: 120px;
+  line-height: 1.5;
+  background: transparent;
+}
+
+.input-area textarea::placeholder { color: #b0bec5; }
+
+.send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--navy);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.send-btn:hover { background: #0a2d42; }
+.send-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+.send-btn svg { color: white; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-top">
+    <a class="back-link" href="index.html">← Tilbage til FAQ</a>
+    <div class="hero-logo">Visma House</div>
+  </div>
+  <h1>Spørg vores assistent</h1>
+  <p>Stil et spørgsmål — jeg svarer ud fra Visma Houses FAQ</p>
+</div>
+
+<div class="chat-wrap">
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <textarea id="input" placeholder="Skriv dit spørgsmål…" rows="1"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+const messagesEl = document.getElementById('messages');
+const inputEl    = document.getElementById('input');
+const sendBtn    = document.getElementById('sendBtn');
+
+const history = [];
+
+const SUGGESTIONS = [
+  "Hvornår har kantinen åbent?",
+  "Hvordan booker jeg et mødelokale?",
+  "Hvad gør jeg hvis jeg glemmer mit adgangskort?",
+  "Hvornår er fitness åbent?"
+];
+
+function addMessage(role, text) {
+  const row = document.createElement('div');
+  row.className = `bubble-row ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = `avatar ${role}`;
+  avatar.textContent = role === 'bot' ? '✦' : 'Dig';
+
+  const bubble = document.createElement('div');
+  bubble.className = `bubble ${role}`;
+  bubble.textContent = text;
+
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  messagesEl.appendChild(row);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  return bubble;
+}
+
+function addTyping() {
+  const row = document.createElement('div');
+  row.className = 'bubble-row bot';
+  row.id = 'typing-row';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar bot';
+  avatar.textContent = '✦';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble bot typing';
+  bubble.innerHTML = '<span></span><span></span><span></span>';
+
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  messagesEl.appendChild(row);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function removeTyping() {
+  document.getElementById('typing-row')?.remove();
+}
+
+function showSuggestions() {
+  const wrap = document.createElement('div');
+  wrap.className = 'suggestions';
+  wrap.id = 'suggestions';
+  SUGGESTIONS.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'suggestion';
+    btn.textContent = s;
+    btn.onclick = () => {
+      wrap.remove();
+      inputEl.value = s;
+      sendMessage();
+    };
+    wrap.appendChild(btn);
+  });
+  messagesEl.appendChild(wrap);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text || sendBtn.disabled) return;
+
+  document.getElementById('suggestions')?.remove();
+  inputEl.value = '';
+  inputEl.style.height = '24px';
+  sendBtn.disabled = true;
+
+  addMessage('user', text);
+  addTyping();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, history })
+    });
+
+    const data = await res.json();
+    removeTyping();
+
+    if (data.reply) {
+      history.push({ role: 'user', content: text });
+      history.push({ role: 'assistant', content: data.reply });
+      addMessage('bot', data.reply);
+    } else {
+      addMessage('bot', 'Beklager, der opstod en fejl. Prøv igen.');
+    }
+  } catch {
+    removeTyping();
+    addMessage('bot', 'Beklager, der opstod en fejl. Prøv igen.');
+  }
+
+  sendBtn.disabled = false;
+  inputEl.focus();
+}
+
+// Auto-resize textarea
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = '24px';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+});
+
+// Send on Enter (Shift+Enter for new line)
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// Welcome message + suggestions
+addMessage('bot', 'Hej! 👋 Jeg er Visma Houses assistent. Hvad kan jeg hjælpe dig med?');
+showSuggestions();
+</script>
+</body>
+</html>
