@@ -155,20 +155,20 @@ body {
 .category-block {
   background: #ffffff;
   border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 16px rgba(12,59,85,0.10), 0 1px 4px rgba(12,59,85,0.06);
   overflow: hidden;
   transition: box-shadow 0.2s, transform 0.15s;
-  border: 2.5px solid var(--bordeaux);
+  border: none;
 }
 
 .category-block:not(.open):hover {
-  box-shadow: 0 6px 20px rgba(114,47,55,0.15);
+  box-shadow: 0 8px 28px rgba(12,59,85,0.16), 0 2px 6px rgba(12,59,85,0.08);
   transform: translateY(-3px);
 }
 
 .category-block.open {
   grid-column: 1 / -1;
-  box-shadow: 0 4px 18px rgba(114,47,55,0.12);
+  box-shadow: 0 8px 32px rgba(12,59,85,0.14), 0 2px 6px rgba(12,59,85,0.08);
 }
 
 .category-header {
