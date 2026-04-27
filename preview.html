@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8"/>
+<title>Sheet Preview</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 30px; }
+  h2 { color: #333; margin-bottom: 16px; }
+  table { border-collapse: collapse; width: 100%; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  th {
+    background: #2d4a7a;
+    color: white;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid #1e3560;
+  }
+  td { padding: 9px 14px; border: 1px solid #ddd; font-size: 13px; }
+  tr:nth-child(even) td { background: #f8f9fa; }
+  tr:nth-child(odd) td { background: #ffffff; }
+
+  .status-faerdig  { background: #b7e1cd !important; }
+  .status-igang    { background: #fce8b2 !important; }
+  .status-afventer { background: #c9daf8 !important; }
+
+  .prio-hoej   { background: #f4c7c3 !important; }
+  .prio-medium { background: #fce8b2 !important; }
+  .prio-lav    { background: #b7e1cd !important; }
+
+  .deadline-overskredet { background: #f4c7c3 !important; color: #cc0000 !important; font-weight: bold; }
+
+  .col-prio { width: 110px; }
+  .col-opgave { width: 340px; }
+  .col-ansvarlig { width: 140px; }
+  .col-status { width: 120px; }
+  .col-deadline { width: 110px; }
+
+  .legend { display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .legend-box { width: 18px; height: 18px; border-radius: 3px; border: 1px solid #ccc; }
+</style>
+</head>
+<body>
+
+<h2>Preview — sådan vil dit ark se ud</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th class="col-prio">Prioritet</th>
+      <th class="col-opgave">Opgavebeskrivelse</th>
+      <th class="col-ansvarlig">Ansvarlig</th>
+      <th class="col-status">Status</th>
+      <th class="col-deadline">Deadline</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="prio-hoej">Høj</td>
+      <td>Bestille nyt kontormateriale til alle etager</td>
+      <td>Anna</td>
+      <td class="status-igang">igang</td>
+      <td>30 apr 2026</td>
+    </tr>
+    <tr>
+      <td class="prio-medium">Medium</td>
+      <td>Opdatere velkomstmateriale til nye medarbejdere</td>
+      <td>Louise</td>
+      <td class="status-afventer">afventer</td>
+      <td>15 maj 2026</td>
+    </tr>
+    <tr>
+      <td class="prio-lav">Lav</td>
+      <td>Rydde op i fælles køleskab på 3. sal</td>
+      <td>Mads</td>
+      <td class="status-faerdig">færdig</td>
+      <td>20 apr 2026</td>
+    </tr>
+    <tr>
+      <td class="prio-hoej">Høj</td>
+      <td>Kontakte IT vedr. printerproblem i mødelokale B</td>
+      <td>Sarah</td>
+      <td class="status-igang">igang</td>
+      <td class="deadline-overskredet">22 apr 2026</td>
+    </tr>
+    <tr>
+      <td class="prio-medium">Medium</td>
+      <td>Booke mødelokaler til onboarding uge 20</td>
+      <td>Anna</td>
+      <td class="status-afventer">afventer</td>
+      <td>5 maj 2026</td>
+    </tr>
+    <tr>
+      <td class="prio-lav">Lav</td>
+      <td>Hænge nye billeder op i kantinen</td>
+      <td>Louise</td>
+      <td class="status-faerdig">færdig</td>
+      <td>18 apr 2026</td>
+    </tr>
+    <tr>
+      <td class="prio-hoej">Høj</td>
+      <td>Tjekke adgangskort til nye studentermedhjælpere</td>
+      <td>Mads</td>
+      <td class="status-igang">igang</td>
+      <td>28 apr 2026</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="legend">
+  <strong style="font-size:12px; align-self:center;">Farveforklaring:</strong>
+  <div class="legend-item"><div class="legend-box" style="background:#f4c7c3"></div> Høj prioritet / Overskredet deadline</div>
+  <div class="legend-item"><div class="legend-box" style="background:#fce8b2"></div> Medium / Igang</div>
+  <div class="legend-item"><div class="legend-box" style="background:#b7e1cd"></div> Lav prioritet / Færdig</div>
+  <div class="legend-item"><div class="legend-box" style="background:#c9daf8"></div> Afventer</div>
+</div>
+
+</body>
+</html>
