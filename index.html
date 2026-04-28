@@ -6,76 +6,176 @@
 <title>Visma House FAQ</title>
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background: #f4f4f4;
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.container {
-  max-width: 900px;
-  margin: 40px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-}
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+  }
 
-h1 {
-  margin-bottom: 10px;
-}
+  header {
+    background: #0057b8;
+    color: white;
+    padding: 28px 24px 22px;
+    text-align: center;
+  }
 
-input {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  margin-bottom: 20px;
-  box-sizing: border-box;
-}
+  header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
 
-.card {
-  background: #fafafa;
-  border: 1px solid #ddd;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-}
+  header p {
+    margin-top: 6px;
+    font-size: 15px;
+    opacity: 0.85;
+  }
 
-.category {
-  font-size: 12px;
-  color: gray;
-  margin-top: 5px;
-}
+  .container {
+    max-width: 760px;
+    margin: 32px auto;
+    padding: 0 16px 48px;
+  }
+
+  .search-wrap {
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+  }
+
+  input {
+    width: 100%;
+    padding: 13px 14px 13px 42px;
+    font-size: 15px;
+    border: 2px solid #dde1e7;
+    border-radius: 10px;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus {
+    border-color: #0057b8;
+  }
+
+  .results-count {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 14px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    border-left: 4px solid #0057b8;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .card-question {
+    font-weight: 700;
+    font-size: 15px;
+    color: #1a1a1a;
+  }
+
+  .card-answer {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.55;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  .badge-kontakt   { background: #dbeafe; color: #1d4ed8; }
+  .badge-kantine   { background: #fef9c3; color: #854d0e; }
+  .badge-it        { background: #dcfce7; color: #166534; }
+  .badge-faciliteter { background: #f3e8ff; color: #6b21a8; }
+  .badge-parkering { background: #ffe4e6; color: #9f1239; }
+  .badge-adgang    { background: #ffedd5; color: #9a3412; }
+  .badge-default   { background: #e5e7eb; color: #374151; }
+
+  .no-results {
+    text-align: center;
+    padding: 40px 0;
+    color: #888;
+    font-size: 15px;
+  }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<header>
   <h1>Visma House FAQ</h1>
-  <p>Søg i praktisk information</p>
+  <p>Find svar på praktisk information om bygningen</p>
+</header>
 
-  <input id="search" placeholder="Søg fx kantine, IT, adgang..." />
+<div class="container">
+  <div class="search-wrap">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input id="search" placeholder="Søg fx kantine, IT, parkering..." />
+  </div>
 
+  <div id="results-count" class="results-count"></div>
   <div id="list"></div>
 </div>
 
 <script>
 const data = [
-  {q:"Reception åbningstid",a:"07.30–16.00",c:"Kontakt"},
-  {q:"Kontakt reception",a:"reception.cby@visma.com / +45 31 46 93 96",c:"Kontakt"},
-  {q:"Frokost tid",a:"11.00–13.00",c:"Kantine"},
-  {q:"Kantine leverandør",a:"ISS - The Food Place",c:"Kantine"},
-  {q:"IT support",a:"service.visma.com",c:"IT"},
-  {q:"Fitness",a:"Åben 24/7 i stueetagen",c:"Faciliteter"},
-  {q:"Parkering",a:"Carlsberg Byen området",c:"Parkering"},
-  {q:"Adgangskort",a:"Bruges til døre, elevatorer og kantine",c:"Adgang"}
+  { q: "Reception åbningstid",    a: "07.30–16.00",                             c: "Kontakt" },
+  { q: "Kontakt reception",       a: "reception.cby@visma.com / +45 31 46 93 96", c: "Kontakt" },
+  { q: "Frokost tid",             a: "11.00–13.00",                             c: "Kantine" },
+  { q: "Kantine leverandør",      a: "ISS - The Food Place",                    c: "Kantine" },
+  { q: "IT support",              a: "service.visma.com",                        c: "IT" },
+  { q: "Fitness",                 a: "Åben 24/7 i stueetagen",                  c: "Faciliteter" },
+  { q: "Parkering",               a: "Carlsberg Byen området",                   c: "Parkering" },
+  { q: "Adgangskort",             a: "Bruges til døre, elevatorer og kantine",   c: "Adgang" }
 ];
+
+const badgeClass = {
+  "Kontakt":    "badge-kontakt",
+  "Kantine":    "badge-kantine",
+  "IT":         "badge-it",
+  "Faciliteter":"badge-faciliteter",
+  "Parkering":  "badge-parkering",
+  "Adgang":     "badge-adgang"
+};
 
 const search = document.getElementById("search");
 const list = document.getElementById("list");
+const countEl = document.getElementById("results-count");
 
 function render() {
-  const q = search.value.toLowerCase();
+  const q = search.value.toLowerCase().trim();
 
   const filtered = data.filter(i =>
     i.q.toLowerCase().includes(q) ||
@@ -83,17 +183,30 @@ function render() {
     i.c.toLowerCase().includes(q)
   );
 
-  list.innerHTML = filtered.map(i => `
-    <div class="card">
-      <b>${i.q}</b><br/>
-      ${i.a}<br/>
-      <span class="category">${i.c}</span>
-    </div>
-  `).join("");
+  countEl.textContent = q
+    ? `${filtered.length} resultat${filtered.length !== 1 ? "er" : ""} for "${search.value}"`
+    : `${filtered.length} emner`;
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="no-results">Ingen resultater – prøv et andet søgeord</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(i => {
+    const cls = badgeClass[i.c] || "badge-default";
+    return `
+      <div class="card">
+        <div class="card-question">${i.q}</div>
+        <div class="card-answer">${i.a}</div>
+        <div class="card-footer">
+          <span class="badge ${cls}">${i.c}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
 }
 
 search.addEventListener("input", render);
-
 render();
 </script>
 
