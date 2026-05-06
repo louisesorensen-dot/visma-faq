@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { data } from "./faqdata";
+import FloorPlan2 from "./FloorPlan2";
 export default function App() {
   const [search, setSearch] = useState("");
 
@@ -31,7 +32,9 @@ export default function App() {
       }}
     />
 
-    <div style={{ display: "grid", gap: 12 }}>
+    <FloorPlan2 />
+
+    <div style={{ display: "grid", gap: 12, marginTop: 32 }}>
       {filtered.map((item, i) => (
         <div
           key={i}
